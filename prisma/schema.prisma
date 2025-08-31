@@ -1,0 +1,131 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String?  @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  trades        Trade[]
+  journalEntries JournalEntry[]
+  brokers       Broker[]
+}
+
+model Trade {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  brokerId    String?
+  broker      Broker?  @relation(fields: [brokerId], references: [id], onDelete: SetNull)
+  
+  // Trade details
+  date        DateTime
+  symbol      String
+  side        String // "LONG" or "SHORT"
+  qty         Float
+  entryPrice  Float
+  exitPrice   Float
+  fees        Float    @default(0)
+  
+  // Optional fields
+  risk        Float?   // Risk per trade (for R calculation)
+  strategy    String?
+  notes       String?
+  tags        String?  // Comma-separated tags
+  imageUrl    String?
+  
+  // Calculated fields (computed in app)
+  // pnl = (exitPrice - entryPrice) * qty * (side === 'LONG' ? 1 : -1) - fees
+  // rMultiple = pnl / risk (if risk exists)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([brokerId])
+  @@index([date])
+  @@index([symbol])
+}
+
+model JournalEntry {
+  id       String   @id @default(cuid())
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  date     DateTime // One entry per day
+  
+  // Journal content
+  whatWentWell String?
+  toImprove    String?
+  mood         Int?     // 1-5 scale
+  notes        String?
+  tags         String?  // Comma-separated tags
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  @@unique([userId, date])
+  @@index([userId])
+  @@index([date])
+}
+
+model Strategy {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  rules       String?  // Entry/exit rules
+  imageUrls   String?  // Comma-separated image URLs
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Broker {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Broker details
+  name        String  // User-defined name (e.g., "My MT5 Account")
+  platform    String  // "MT5", "MT4", "cTrader", "Binance", etc.
+  accountId   String  // Account number or login
+  server      String? // Server name for MT4/MT5
+  username    String? // Username for some platforms
+  password    String? // Encrypted password (store safely)
+  apiKey      String? // API key for crypto exchanges
+  apiSecret   String? // API secret for crypto exchanges
+  
+  // Connection details
+  isActive    Boolean @default(true)
+  lastSync    DateTime?
+  status      String  @default("disconnected") // "connected", "disconnected", "error"
+  
+  // Optional metadata
+  currency    String? @default("USD")
+  leverage    Int?
+  company     String?
+  
+  // Relations
+  trades      Trade[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@unique([userId, accountId, platform])
+  @@index([userId])
+  @@index([platform])
+}
+
+// Note: SQLite doesn't support enums, so we use String with validation in the app
+// Possible values: "LONG", "SHORT"
+// Broker platforms: "MT5", "MT4", "cTrader", "NinjaTrader", "Binance"
+// Broker status: "connected", "disconnected", "error", "connecting"

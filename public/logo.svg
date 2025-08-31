@@ -1,0 +1,18 @@
+<svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6366F1;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Main D shape -->
+  <path d="M50 80C50 58.9 67.9 41 89 41H250C321.8 41 380 99.2 380 171V229C380 300.8 321.8 359 250 359H89C67.9 359 50 341.1 50 320V80Z" fill="url(#gradient)"/>
+  
+  <!-- Inner white area -->
+  <path d="M90 90H230C281.9 90 324 132.1 324 184V216C324 267.9 281.9 310 230 310H90V90Z" fill="white"/>
+  
+  <!-- Chart lines inside D -->
+  <path d="M150 220L190 180L230 200L270 160" stroke="url(#gradient)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M170 250L200 220L230 240" stroke="url(#gradient)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
