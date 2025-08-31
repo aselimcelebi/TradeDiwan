@@ -9,6 +9,7 @@ export const metadata = {
   keywords: "trading, journal, analytics, forex, crypto, stocks, trading diary",
   authors: [{ name: "TradeDiwan Team" }],
   creator: "TradeDiwan",
+  metadataBase: new URL('https://app.tradediwan.com'),
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

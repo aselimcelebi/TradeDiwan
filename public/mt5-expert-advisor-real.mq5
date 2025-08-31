@@ -5,14 +5,14 @@
 //+------------------------------------------------------------------+
 
 #property copyright "Trade Journal App"
-#property link      "http://localhost:3000"
-#property version   "3.01"
+#property link      "https://app.tradediwan.com"
+#property version   "4.0"
 #property description "Real-time MT5 trade synchronization with advanced features"
 #property strict
 
 //--- Input parameters
 input group "=== Connection Settings ==="
-input string WebhookURL = "https://288f4111e8ed.ngrok-free.app/api/mt5/import";    // Web application endpoint
+input string WebhookURL = "https://app.tradediwan.com/api/mt5/import";    // Web application endpoint
 input string ApiKey = "";                                            // API key for authentication
 input bool UseSSL = true;                                           // Use HTTPS connection
 
